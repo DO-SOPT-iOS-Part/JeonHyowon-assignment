@@ -6,4 +6,5 @@ target 'JeonHyowon-assignment' do
   use_frameworks!
 
   # Pods for JeonHyowon-assignment
+  pod 'SnapKit'
 end

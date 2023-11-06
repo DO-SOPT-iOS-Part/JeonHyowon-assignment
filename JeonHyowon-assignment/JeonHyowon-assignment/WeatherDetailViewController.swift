@@ -8,6 +8,7 @@
 import UIKit
 
 import SnapKit
+import Then
 
 class WeatherDetailViewController: UIViewController {
     
@@ -33,6 +34,14 @@ class WeatherDetailViewController: UIViewController {
         imageView.contentMode = .scaleAspectFill
         return imageView
     }()
+    
+    private var scrollView: UIScrollView = {
+        let scrollView = UIScrollView()
+        scrollView.showsHorizontalScrollIndicator = false
+        return scrollView
+    }()
+    
+    private var contentView = UIView()
     
     private var cityLabel: UILabel = {
         let label = UILabel()
@@ -90,20 +99,19 @@ class WeatherDetailViewController: UIViewController {
         return view
     }()
     
-    private var scrollView: UIScrollView = {
-        let scrollView = UIScrollView()
-        scrollView.showsHorizontalScrollIndicator = false
-        return scrollView
-    }()
+    private var collectionViewLayout = UICollectionViewFlowLayout().then {
+        $0.itemSize = CGSize(width: 44, height: 140)
+        $0.minimumInteritemSpacing = 22
+        $0.scrollDirection = .horizontal
+    }
     
-    private var stackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.axis = .horizontal
-        stackView.distribution = .fillEqually
-        stackView.spacing = 22
-        return stackView
-    }()
-    
+    private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: collectionViewLayout).then {
+        $0.backgroundColor = .clear
+        $0.collectionViewLayout = collectionViewLayout
+        $0.dataSource = self
+        $0.register(TodayWeatherCollectionViewCell.self, forCellWithReuseIdentifier: TodayWeatherCollectionViewCell.identifier)
+    }
+        
     private var mapButton: UIButton = {
         let button = UIButton()
         button.setImage(UIImage(named: "icon_map"), for: .normal)
@@ -117,7 +125,7 @@ class WeatherDetailViewController: UIViewController {
         return view
     }()
 
-    private var menuButton: UIButton = {
+    private lazy var menuButton: UIButton = {
         let button = UIButton()
         button.setImage(UIImage(named: "icon_menu"), for: .normal)
         button.addTarget(self, action: #selector(didTapMenuButton), for: .touchUpInside)
@@ -133,78 +141,58 @@ class WeatherDetailViewController: UIViewController {
         self.view.backgroundColor = .black
                         
         setLayout()
-        setStackView()
+    }
+}
+
+extension WeatherDetailViewController: UICollectionViewDataSource {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return todayWeatherData.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let item = collectionView.dequeueReusableCell(
+            withReuseIdentifier: TodayWeatherCollectionViewCell.identifier,
+            for: indexPath
+        ) as? TodayWeatherCollectionViewCell else {return UICollectionViewCell()}
+        
+        item.bindData(data: todayWeatherData[indexPath.item])
+        return item
     }
 }
 
 private extension WeatherDetailViewController {
-    func setStackView() {
-        for weather in todayWeatherData {
-            let hourWeatherView = UIView()
-            
-            let hourLabel: UILabel = {
-                let label = UILabel()
-                label.text = weather.hour
-                label.font = UIFont(name: "SFProDisplay-Medium", size: 17)
-                label.textColor = .white
-                return label
-            }()
-            
-            let weatherImageView: UIImageView = {
-                let imageView = UIImageView()
-                imageView.image = UIImage(named: weather.image)
-                imageView.contentMode = .scaleAspectFill
-                return imageView
-            }()
-            
-            let temperatureLabel: UILabel = {
-                let label = UILabel()
-                label.text = weather.temperature
-                label.font = UIFont(name: "SFProDisplay-Medium", size: 22)
-                label.textColor = .white
-                return label
-            }()
-            
-            [
-                hourLabel,
-                weatherImageView,
-                temperatureLabel
-            ].forEach {
-                $0.translatesAutoresizingMaskIntoConstraints = false
-                hourWeatherView.addSubview($0)
-            }
-            
-            hourLabel.snp.makeConstraints {
-                $0.top.centerX.equalToSuperview()
-            }
-            
-            weatherImageView.snp.makeConstraints {
-                $0.top.equalTo(hourLabel.snp.bottom).offset(14)
-                $0.leading.trailing.equalToSuperview()
-                $0.size.equalTo(44)
-            }
-            
-            temperatureLabel.snp.makeConstraints {
-                $0.top.equalTo(weatherImageView.snp.bottom).offset(14)
-                $0.centerX.equalToSuperview()
-            }
-            
-            stackView.addArrangedSubview(hourWeatherView)
-        }
-    }
-    
     func setLayout() {
         [
             backgroundImageView,
-            cityLabel,
-            currentTemperatureLabel,
-            currentWeatherLabel,
-            temperatureLabel,
-            weatherDetailView,
+            scrollView,
             toolbarView
         ].forEach {
             $0.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview($0)
+        }
+        
+        backgroundImageView.snp.makeConstraints {
+            $0.edges.equalToSuperview()
+        }
+        
+        scrollView.snp.makeConstraints {
+            $0.edges.equalToSuperview()
+        }
+        
+        toolbarView.snp.makeConstraints {
+            $0.leading.trailing.bottom.equalToSuperview()
+            $0.height.equalTo(82)
+        }
+        
+        [
+            contentView
+        ].forEach {
+            $0.translatesAutoresizingMaskIntoConstraints = false
+            scrollView.addSubview($0)
+        }
+        
+        contentView.snp.makeConstraints {
+            $0.edges.width.equalToSuperview()
         }
         
         [
@@ -215,19 +203,25 @@ private extension WeatherDetailViewController {
             toolbarView.addSubview($0)
         }
         
-        [
-            detailLabel,
-            separatorView,
-            scrollView
-        ].forEach {
-            $0.translatesAutoresizingMaskIntoConstraints = false
-            weatherDetailView.addSubview($0)
+        mapButton.snp.makeConstraints {
+            $0.top.equalToSuperview().inset(4)
+            $0.leading.equalToSuperview().inset(10)
         }
         
-        scrollView.addSubview(stackView)
+        menuButton.snp.makeConstraints {
+            $0.top.equalToSuperview().inset(4)
+            $0.trailing.equalToSuperview().inset(10)
+        }
         
-        backgroundImageView.snp.makeConstraints {
-            $0.edges.equalToSuperview()
+        [
+            cityLabel,
+            currentTemperatureLabel,
+            currentWeatherLabel,
+            temperatureLabel,
+            weatherDetailView
+        ].forEach {
+            $0.translatesAutoresizingMaskIntoConstraints = false
+            contentView.addSubview($0)
         }
         
         cityLabel.snp.makeConstraints {
@@ -252,22 +246,16 @@ private extension WeatherDetailViewController {
         
         weatherDetailView.snp.makeConstraints {
             $0.top.equalTo(temperatureLabel.snp.bottom).offset(44)
-            $0.leading.trailing.equalToSuperview().inset(20)
+            $0.leading.trailing.bottom.equalToSuperview().inset(20)
         }
         
-        toolbarView.snp.makeConstraints {
-            $0.leading.trailing.bottom.equalToSuperview()
-            $0.height.equalTo(82)
-        }
-        
-        mapButton.snp.makeConstraints {
-            $0.top.equalToSuperview().inset(4)
-            $0.leading.equalToSuperview().inset(10)
-        }
-        
-        menuButton.snp.makeConstraints {
-            $0.top.equalToSuperview().inset(4)
-            $0.trailing.equalToSuperview().inset(10)
+        [
+            detailLabel,
+            separatorView,
+            collectionView
+        ].forEach {
+            $0.translatesAutoresizingMaskIntoConstraints = false
+            weatherDetailView.addSubview($0)
         }
         
         detailLabel.snp.makeConstraints {
@@ -282,15 +270,10 @@ private extension WeatherDetailViewController {
             $0.height.equalTo(0.2)
         }
         
-        scrollView.snp.makeConstraints {
+        collectionView.snp.makeConstraints {
             $0.top.equalTo(separatorView.snp.bottom).offset(14)
             $0.leading.trailing.bottom.equalToSuperview()
             $0.height.equalTo(140)
-        }
-        
-        stackView.snp.makeConstraints {
-            $0.top.bottom.height.equalToSuperview()
-            $0.leading.trailing.equalToSuperview().inset(20)
         }
     }
 }

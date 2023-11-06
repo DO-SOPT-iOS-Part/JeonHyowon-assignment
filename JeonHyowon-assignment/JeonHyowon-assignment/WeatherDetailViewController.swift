@@ -28,76 +28,70 @@ class WeatherDetailViewController: UIViewController {
                                                 .init(hour: "10시", image: "icon_sunshower", temperature: "8°"),
                                                 .init(hour: "11시", image: "icon_cloudy", temperature: "7°")]
     
-    private var backgroundImageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.image = UIImage(named: "Img")
-        imageView.contentMode = .scaleAspectFill
-        return imageView
-    }()
+    let weeklyWeatherData: [WeeklyWeatherData] = [.init(day: "오늘", weatherImage: "cloud.sun.fill", minimumTemperature: "15°", temperatureImage: "temperature1", maximumTemperature: "29°"),
+                                                  .init(day: "월", weatherImage: "sun.max.fill", minimumTemperature: "18°", temperatureImage: "temperature2", maximumTemperature: "27°"),
+                                                  .init(day: "화", weatherImage: "cloud.fill", minimumTemperature: "20°", temperatureImage: "temperature3", maximumTemperature: "25°"),
+                                                  .init(day: "수", weatherImage: "cloud.rain.fill", minimumTemperature: "17°", temperatureImage: "temperature4", maximumTemperature: "25°"),
+                                                  .init(day: "목", weatherImage: "sun.max.fill", minimumTemperature: "17°", temperatureImage: "temperature5", maximumTemperature: "25°"),
+                                                  .init(day: "금", weatherImage: "cloud.heavyrain.fill", minimumTemperature: "20°", temperatureImage: "temperature6", maximumTemperature: "26°"),
+                                                  .init(day: "토", weatherImage: "cloud.bolt.fill", minimumTemperature: "18°", temperatureImage: "temperature7", maximumTemperature: "25°"),
+                                                  .init(day: "일", weatherImage: "cloud.sun.rain.fill", minimumTemperature: "13°", temperatureImage: "temperature8", maximumTemperature: "21°"),
+                                                  .init(day: "월", weatherImage: "smoke.fill", minimumTemperature: "12°", temperatureImage: "temperature9", maximumTemperature: "19°"),
+                                                  .init(day: "화", weatherImage: "cloud.sleet.fill", minimumTemperature: "18°", temperatureImage: "temperature10", maximumTemperature: "25°"),
+                                                  .init(day: "수", weatherImage: "sun.max.fill", minimumTemperature: "18°", temperatureImage: "temperature11", maximumTemperature: "25°")]
     
-    private var scrollView: UIScrollView = {
-        let scrollView = UIScrollView()
-        scrollView.showsHorizontalScrollIndicator = false
-        return scrollView
-    }()
+    private var backgroundImageView = UIImageView().then {
+        $0.image = UIImage(named: "Img")
+        $0.contentMode = .scaleAspectFill
+    }
+    
+    private var scrollView = UIScrollView().then {
+        $0.showsHorizontalScrollIndicator = false
+    }
     
     private var contentView = UIView()
     
-    private var cityLabel: UILabel = {
-        let label = UILabel()
-        label.text = "서울특별시"
-        label.font = UIFont(name: "SFProDisplay-Regular", size: 36)
-        label.textColor = .white
-        return label
-    }()
+    private var cityLabel = UILabel().then {
+        $0.text = "서울특별시"
+        $0.font = UIFont(name: "SFProDisplay-Regular", size: 36)
+        $0.textColor = .white
+    }
     
-    private var currentTemperatureLabel: UILabel = {
-        let label = UILabel()
-        label.text = "21°"
-        label.font = UIFont(name: "SFProDisplay-Thin", size: 102)
-        label.textColor = .white
-        return label
-    }()
+    private var currentTemperatureLabel = UILabel().then {
+        $0.text = "21°"
+        $0.font = UIFont(name: "SFProDisplay-Thin", size: 102)
+        $0.textColor = .white
+    }
     
-    private var currentWeatherLabel: UILabel = {
-        let label = UILabel()
-        label.text = "흐림"
-        label.font = UIFont(name: "SFProDisplay-Regular", size: 24)
-        label.textColor = .white
-        return label
-    }()
+    private var currentWeatherLabel = UILabel().then {
+        $0.text = "흐림"
+        $0.font = UIFont(name: "SFProDisplay-Regular", size: 24)
+        $0.textColor = .white
+    }
     
-    private var temperatureLabel: UILabel = {
-        let label = UILabel()
-        label.text = "최고:29° 최저:15°"
-        label.font = UIFont(name: "SFProDisplay-Medium", size: 20)
-        label.textColor = .white
-        return label
-    }()
+    private var temperatureLabel = UILabel().then {
+        $0.text = "최고:29° 최저:15°"
+        $0.font = UIFont(name: "SFProDisplay-Medium", size: 20)
+        $0.textColor = .white
+    }
     
-    private var weatherDetailView: UIView = {
-        let view = UIView()
-        view.clipsToBounds = true
-        view.layer.cornerRadius = 15
-        view.layer.borderWidth = 0.5
-        view.layer.borderColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.25).cgColor
-        return view
-    }()
+    private var weatherDetailView = UIView().then {
+        $0.clipsToBounds = true
+        $0.layer.cornerRadius = 15
+        $0.layer.borderWidth = 0.5
+        $0.layer.borderColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.25).cgColor
+    }
     
-    private var detailLabel: UILabel = {
-        let label = UILabel()
-        label.text = "08:00~09:00에 강우 상태가, 18:00에 한때 흐린 상태가 예상됩니다."
-        label.font = UIFont(name: "SFProDisplay-Regular", size: 18)
-        label.textColor = .white
-        label.numberOfLines = 0
-        return label
-    }()
+    private var detailLabel = UILabel().then {
+        $0.text = "08:00~09:00에 강우 상태가, 18:00에 한때 흐린 상태가 예상됩니다."
+        $0.font = UIFont(name: "SFProDisplay-Regular", size: 18)
+        $0.textColor = .white
+        $0.numberOfLines = 0
+    }
     
-    private var separatorView: UIView = {
-        let view = UIView()
-        view.backgroundColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.25)
-        return view
-    }()
+    private var separatorView = UIView().then {
+        $0.backgroundColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.25)
+    }
     
     private var collectionViewLayout = UICollectionViewFlowLayout().then {
         $0.itemSize = CGSize(width: 44, height: 140)
@@ -111,26 +105,35 @@ class WeatherDetailViewController: UIViewController {
         $0.dataSource = self
         $0.register(TodayWeatherCollectionViewCell.self, forCellWithReuseIdentifier: TodayWeatherCollectionViewCell.identifier)
     }
-        
-    private var mapButton: UIButton = {
-        let button = UIButton()
-        button.setImage(UIImage(named: "icon_map"), for: .normal)
-        return button
-    }()
     
-    private var toolbarView: UIView = {
-        let view = UIView()
-        view.layer.borderWidth = 0.5
-        view.layer.borderColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.25).cgColor
-        return view
-    }()
+    private lazy var tableView = UITableView(frame: .zero, style: .plain).then {
+        $0.backgroundColor = .init(white: 0.5, alpha: 0.05)
+        $0.separatorColor = .lightGray
+        $0.separatorStyle = .singleLine
+        $0.isScrollEnabled = false
+        $0.layer.cornerRadius = 15
+        $0.layer.borderWidth = 0.5
+        $0.layer.borderColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.25).cgColor
+        $0.clipsToBounds = true
+        $0.sectionHeaderTopPadding = 0
+        $0.delegate = self
+        $0.dataSource = self
+        $0.register(WeeklyWeatherTableViewCell.self, forCellReuseIdentifier: WeeklyWeatherTableViewCell.identifier)
+    }
+        
+    private var mapButton = UIButton().then {
+        $0.setImage(UIImage(named: "icon_map"), for: .normal)
+    }
+    
+    private var toolbarView = UIView().then {
+        $0.layer.borderWidth = 0.5
+        $0.layer.borderColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.25).cgColor
+    }
 
-    private lazy var menuButton: UIButton = {
-        let button = UIButton()
-        button.setImage(UIImage(named: "icon_menu"), for: .normal)
-        button.addTarget(self, action: #selector(didTapMenuButton), for: .touchUpInside)
-        return button
-    }()
+    private lazy var menuButton = UIButton().then {
+        $0.setImage(UIImage(named: "icon_menu"), for: .normal)
+        $0.addTarget(self, action: #selector(didTapMenuButton), for: .touchUpInside)
+    }
     
     @objc func didTapMenuButton() {
         self.navigationController?.popViewController(animated: true)
@@ -160,6 +163,58 @@ extension WeatherDetailViewController: UICollectionViewDataSource {
     }
 }
 
+extension WeatherDetailViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let headerView = UIView()
+        
+        let imageView = UIImageView().then {
+            $0.image = UIImage(named: "icon_calendar")
+            $0.tintColor = .lightGray
+            $0.contentMode = .scaleAspectFill
+        }
+        
+        let label = UILabel().then {
+            $0.text = "10일간의 일기예보"
+            $0.font = UIFont(name: "SFProDisplay-Medium", size: 15)
+            $0.textColor = .lightGray
+        }
+        
+        [imageView, label].forEach {
+            $0.translatesAutoresizingMaskIntoConstraints = false
+            headerView.addSubview($0)
+        }
+        
+        imageView.snp.makeConstraints {
+            $0.top.bottom.equalToSuperview().inset(12)
+            $0.leading.equalToSuperview().inset(16)
+        }
+        
+        label.snp.makeConstraints {
+            $0.centerY.equalToSuperview()
+            $0.leading.equalTo(imageView.snp.trailing).offset(5)
+        }
+        
+        return headerView
+    }
+}
+
+extension WeatherDetailViewController: UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return weeklyWeatherData.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = tableView.dequeueReusableCell(
+            withIdentifier: WeeklyWeatherTableViewCell.identifier,
+            for: indexPath
+        ) as? WeeklyWeatherTableViewCell else {return UITableViewCell()}
+        
+        cell.selectionStyle = .none
+        cell.bindData(data: weeklyWeatherData[indexPath.row])
+        return cell
+    }
+}
+
 private extension WeatherDetailViewController {
     func setLayout() {
         [
@@ -176,7 +231,8 @@ private extension WeatherDetailViewController {
         }
         
         scrollView.snp.makeConstraints {
-            $0.edges.equalToSuperview()
+            $0.top.leading.trailing.equalToSuperview()
+            $0.bottom.equalTo(toolbarView.snp.top)
         }
         
         toolbarView.snp.makeConstraints {
@@ -218,14 +274,15 @@ private extension WeatherDetailViewController {
             currentTemperatureLabel,
             currentWeatherLabel,
             temperatureLabel,
-            weatherDetailView
+            weatherDetailView,
+            tableView
         ].forEach {
             $0.translatesAutoresizingMaskIntoConstraints = false
             contentView.addSubview($0)
         }
         
         cityLabel.snp.makeConstraints {
-            $0.top.equalToSuperview().inset(78)
+            $0.top.equalToSuperview().inset(34)
             $0.centerX.equalToSuperview()
         }
         
@@ -246,7 +303,13 @@ private extension WeatherDetailViewController {
         
         weatherDetailView.snp.makeConstraints {
             $0.top.equalTo(temperatureLabel.snp.bottom).offset(44)
+            $0.leading.trailing.equalToSuperview().inset(20)
+        }
+        
+        tableView.snp.makeConstraints {
+            $0.top.equalTo(weatherDetailView.snp.bottom).offset(20)
             $0.leading.trailing.bottom.equalToSuperview().inset(20)
+            $0.height.equalTo(weeklyWeatherData.count * 54 + 80)
         }
         
         [

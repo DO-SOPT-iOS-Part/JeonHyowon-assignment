@@ -8,92 +8,72 @@
 import UIKit
 
 import SnapKit
+import Then
 
 class MainViewController: UIViewController {
     
-    private var settingButton: UIButton = {
-        let button = UIButton()
-        button.setImage(UIImage(named: "icon_setting"), for: .normal)
-        return button
-    }()
+    private var settingButton = UIButton().then {
+        $0.setImage(UIImage(named: "icon_setting"), for: .normal)
+    }
     
-    private var weatherLabel: UILabel = {
-        let label = UILabel()
-        label.text = "날씨"
-        label.font = UIFont(name: "SFProDisplay-Bold", size: 36)
-        label.textColor = .white
-        return label
-    }()
+    private var weatherLabel = UILabel().then {
+        $0.text = "날씨"
+        $0.font = UIFont(name: "SFProDisplay-Bold", size: 36)
+        $0.textColor = .white
+    }
     
-    private var searchBar: UISearchBar = {
-        let searchBar = UISearchBar()
-        searchBar.placeholder = "도시 또는 공항 검색"
-        searchBar.clipsToBounds = true
-        searchBar.layer.cornerRadius = 10
-        searchBar.setImage(UIImage(named: "icon_search"), for: .search, state: .normal)
-        searchBar.searchBarStyle = .minimal
-
-        return searchBar
-    }()
+    private var searchBar = UISearchBar().then {
+        $0.placeholder = "도시 또는 공항 검색"
+        $0.clipsToBounds = true
+        $0.layer.cornerRadius = 10
+        $0.setImage(UIImage(named: "icon_search"), for: .search, state: .normal)
+        $0.searchBarStyle = .minimal
+    }
     
     private var stackView = UIStackView()
     
     private var locationView = UIView()
     
-    private var imageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.image = UIImage(named: "list")
-        imageView.contentMode = .scaleAspectFill
-        return imageView
-    }()
+    private var imageView = UIImageView().then {
+        $0.image = UIImage(named: "list")
+        $0.contentMode = .scaleAspectFill
+    }
     
-    private var locationLabel: UILabel = {
-        let label = UILabel()
-        label.text = "나의 위치"
-        label.font = UIFont(name: "SFProDisplay-Bold", size: 24)
-        label.textColor = .white
-        return label
-    }()
+    private var locationLabel = UILabel().then {
+        $0.text = "나의 위치"
+        $0.font = UIFont(name: "SFProDisplay-Bold", size: 24)
+        $0.textColor = .white
+    }
     
-    private var cityLabel: UILabel = {
-        let label = UILabel()
-        label.text = "서울특별시"
-        label.font = UIFont(name: "SFProDisplay-Medium", size: 17)
-        label.textColor = .white
-        return label
-    }()
+    private var cityLabel = UILabel().then {
+        $0.text = "서울특별시"
+        $0.font = UIFont(name: "SFProDisplay-Medium", size: 17)
+        $0.textColor = .white
+    }
     
-    private var currentWeatherLabel: UILabel = {
-        let label = UILabel()
-        label.text = "흐림"
-        label.font = UIFont(name: "SFProDisplay-Medium", size: 16)
-        label.textColor = .white
-        return label
-    }()
+    private var currentWeatherLabel = UILabel().then {
+        $0.text = "흐림"
+        $0.font = UIFont(name: "SFProDisplay-Medium", size: 16)
+        $0.textColor = .white
+    }
     
-    private var currentTemperatureLabel: UILabel = {
-        let label = UILabel()
-        label.text = "21°"
-        label.font = UIFont(name: "SFProDisplay-Light", size: 52)
-        label.textColor = .white
-        return label
-    }()
+    private var currentTemperatureLabel = UILabel().then {
+        $0.text = "21°"
+        $0.font = UIFont(name: "SFProDisplay-Light", size: 52)
+        $0.textColor = .white
+    }
     
-    private var minimumTemperatureLabel: UILabel = {
-        let label = UILabel()
-        label.text = "최저:15°"
-        label.font = UIFont(name: "SFProDisplay-Medium", size: 15)
-        label.textColor = .white
-        return label
-    }()
+    private var minimumTemperatureLabel = UILabel().then {
+        $0.text = "최저:15°"
+        $0.font = UIFont(name: "SFProDisplay-Medium", size: 15)
+        $0.textColor = .white
+    }
     
-    private var maximumTemperatureLabel: UILabel = {
-        let label = UILabel()
-        label.text = "최고:29°"
-        label.font = UIFont(name: "SFProDisplay-Medium", size: 15)
-        label.textColor = .white
-        return label
-    }()
+    private var maximumTemperatureLabel = UILabel().then {
+        $0.text = "최고:29°"
+        $0.font = UIFont(name: "SFProDisplay-Medium", size: 15)
+        $0.textColor = .white
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()

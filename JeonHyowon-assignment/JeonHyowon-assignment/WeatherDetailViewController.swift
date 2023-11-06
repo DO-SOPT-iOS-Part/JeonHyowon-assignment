@@ -11,22 +11,21 @@ import SnapKit
 
 class WeatherDetailViewController: UIViewController {
     
-    let weatherData = [
-        ["hour": "Now", "image": "icon_cloudy", "temperature": "18°"],
-        ["hour": "10시", "image": "icon_heavyrain", "temperature": "17°"],
-        ["hour": "11시", "image": "icon_lightning", "temperature": "16°"],
-        ["hour": "12시", "image": "icon_rain", "temperature": "16°"],
-        ["hour": "1시", "image": "icon_sunshower", "temperature": "16°"],
-        ["hour": "2시", "image": "icon_sunshower", "temperature": "17°"],
-        ["hour": "3시", "image": "icon_rain", "temperature": "16°"],
-        ["hour": "4시", "image": "icon_cloudy", "temperature": "15°"],
-        ["hour": "5시", "image": "icon_lightning", "temperature": "15°"],
-        ["hour": "6시", "image": "icon_lightning", "temperature": "14°"],
-        ["hour": "7시", "image": "icon_heavyrain", "temperature": "15°"],
-        ["hour": "8시", "image": "icon_lightning", "temperature": "17°"],
-        ["hour": "9시", "image": "icon_cloudy", "temperature": "18°"],
-        ["hour": "10시", "image": "icon_sunshower", "temperature": "17°"],
-    ]
+    let todayWeatherData: [TodayWeatherData] = [.init(hour: "Now", image: "icon_cloudy", temperature: "18°"),
+                                                .init(hour: "10시", image: "icon_heavyrain", temperature: "17°"),
+                                                .init(hour: "11시", image: "icon_lightning", temperature: "16°"),
+                                                .init(hour: "12시", image: "icon_cloudy", temperature: "16°"),
+                                                .init(hour: "1시", image: "icon_rain", temperature: "15°"),
+                                                .init(hour: "2시", image: "icon_sunshower", temperature: "14°"),
+                                                .init(hour: "3시", image: "icon_sunshower", temperature: "14°"),
+                                                .init(hour: "4시", image: "icon_cloudy", temperature: "14°"),
+                                                .init(hour: "5시", image: "icon_lightning", temperature: "13°"),
+                                                .init(hour: "6시", image: "icon_lightning", temperature: "11°"),
+                                                .init(hour: "7시", image: "icon_heavyrain", temperature: "10°"),
+                                                .init(hour: "8시", image: "icon_cloudy", temperature: "10°"),
+                                                .init(hour: "9시", image: "icon_lightning", temperature: "9°"),
+                                                .init(hour: "10시", image: "icon_sunshower", temperature: "8°"),
+                                                .init(hour: "11시", image: "icon_cloudy", temperature: "7°")]
     
     private var backgroundImageView: UIImageView = {
         let imageView = UIImageView()
@@ -140,12 +139,12 @@ class WeatherDetailViewController: UIViewController {
 
 private extension WeatherDetailViewController {
     func setStackView() {
-        for weather in weatherData {
+        for weather in todayWeatherData {
             let hourWeatherView = UIView()
             
             let hourLabel: UILabel = {
                 let label = UILabel()
-                label.text = weather["hour"]
+                label.text = weather.hour
                 label.font = UIFont(name: "SFProDisplay-Medium", size: 17)
                 label.textColor = .white
                 return label
@@ -153,14 +152,14 @@ private extension WeatherDetailViewController {
             
             let weatherImageView: UIImageView = {
                 let imageView = UIImageView()
-                imageView.image = UIImage(named: weather["image"]!)
+                imageView.image = UIImage(named: weather.image)
                 imageView.contentMode = .scaleAspectFill
                 return imageView
             }()
             
             let temperatureLabel: UILabel = {
                 let label = UILabel()
-                label.text = weather["temperature"]
+                label.text = weather.temperature
                 label.font = UIFont(name: "SFProDisplay-Medium", size: 22)
                 label.textColor = .white
                 return label

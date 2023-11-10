@@ -97,6 +97,7 @@ class WeatherDetailViewController: UIViewController {
         $0.itemSize = CGSize(width: 44, height: 140)
         $0.minimumInteritemSpacing = 22
         $0.scrollDirection = .horizontal
+        $0.sectionInset = UIEdgeInsets(top: 0, left: 15, bottom: 0, right: 15)
     }
     
     private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: collectionViewLayout).then {

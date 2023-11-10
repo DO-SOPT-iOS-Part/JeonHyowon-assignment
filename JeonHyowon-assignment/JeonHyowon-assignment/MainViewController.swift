@@ -132,7 +132,7 @@ private extension MainViewController {
         
         settingButton.snp.makeConstraints {
             $0.top.equalTo(view.safeAreaLayoutGuide).offset(8)
-            $0.trailing.equalToSuperview().inset(-10)
+            $0.trailing.equalToSuperview().inset(10)
             $0.size.equalTo(44)
         }
         

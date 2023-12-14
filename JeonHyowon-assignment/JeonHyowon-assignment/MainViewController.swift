@@ -12,6 +12,8 @@ import Then
 
 class MainViewController: UIViewController {
     
+    let cityList: [String] = ["seoul", "jeju", "gwangju", "daegu", "cheonan"]
+    
     private var settingButton = UIButton().then {
         $0.setImage(UIImage(named: "icon_setting"), for: .normal)
     }
@@ -30,49 +32,13 @@ class MainViewController: UIViewController {
         $0.searchBarStyle = .minimal
     }
     
-    private var stackView = UIStackView()
-    
-    private var locationView = UIView()
-    
-    private var imageView = UIImageView().then {
-        $0.image = UIImage(named: "list")
-        $0.contentMode = .scaleAspectFill
-    }
-    
-    private var locationLabel = UILabel().then {
-        $0.text = "나의 위치"
-        $0.font = UIFont(name: "SFProDisplay-Bold", size: 24)
-        $0.textColor = .white
-    }
-    
-    private var cityLabel = UILabel().then {
-        $0.text = "서울특별시"
-        $0.font = UIFont(name: "SFProDisplay-Medium", size: 17)
-        $0.textColor = .white
-    }
-    
-    private var currentWeatherLabel = UILabel().then {
-        $0.text = "흐림"
-        $0.font = UIFont(name: "SFProDisplay-Medium", size: 16)
-        $0.textColor = .white
-    }
-    
-    private var currentTemperatureLabel = UILabel().then {
-        $0.text = "21°"
-        $0.font = UIFont(name: "SFProDisplay-Light", size: 52)
-        $0.textColor = .white
-    }
-    
-    private var minimumTemperatureLabel = UILabel().then {
-        $0.text = "최저:15°"
-        $0.font = UIFont(name: "SFProDisplay-Medium", size: 15)
-        $0.textColor = .white
-    }
-    
-    private var maximumTemperatureLabel = UILabel().then {
-        $0.text = "최고:29°"
-        $0.font = UIFont(name: "SFProDisplay-Medium", size: 15)
-        $0.textColor = .white
+    private lazy var tableView = UITableView(frame: .zero, style: .plain).then {
+        $0.backgroundColor = .clear
+        $0.clipsToBounds = true
+        $0.sectionHeaderTopPadding = 0
+        $0.delegate = self
+        $0.dataSource = self
+        $0.register(LocationTableViewCell.self, forCellReuseIdentifier: LocationTableViewCell.identifier)
     }
 
     override func viewDidLoad() {
@@ -80,9 +46,6 @@ class MainViewController: UIViewController {
         self.view.backgroundColor = .black
         
         self.navigationController?.navigationBar.isHidden = true
-        
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(didTapLocationView))
-        self.locationView.addGestureRecognizer(tapGesture)
         
         setLayout()
     }
@@ -92,9 +55,37 @@ class MainViewController: UIViewController {
     }
 }
 
-private extension MainViewController {
-    @objc func didTapLocationView(sender: UITapGestureRecognizer) {
+extension MainViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         self.navigationController?.pushViewController(WeatherDetailViewController(), animated: true)
+    }
+    
+    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        return UIView()
+    }
+    
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        return 16
+    }
+}
+
+extension MainViewController: UITableViewDataSource {
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return cityList.count
+    }
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 1
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = tableView.dequeueReusableCell(
+            withIdentifier: LocationTableViewCell.identifier,
+            for: indexPath
+        ) as? LocationTableViewCell else {return UITableViewCell()}
+        
+        cell.selectionStyle = .none
+        cell.bindData(city: cityList[indexPath.section])
+        return cell
     }
 }
 
@@ -104,30 +95,9 @@ private extension MainViewController {
             settingButton,
             weatherLabel,
             searchBar,
-            stackView
+            tableView
         ].forEach {
-            $0.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview($0)
-        }
-        
-        [
-            locationView
-        ].forEach {
-            $0.translatesAutoresizingMaskIntoConstraints = false
-            stackView.addSubview($0)
-        }
-        
-        [
-            imageView,
-            locationLabel,
-            cityLabel,
-            currentWeatherLabel,
-            currentTemperatureLabel,
-            minimumTemperatureLabel,
-            maximumTemperatureLabel
-        ].forEach {
-            $0.translatesAutoresizingMaskIntoConstraints = false
-            locationView.addSubview($0)
         }
         
         settingButton.snp.makeConstraints {
@@ -147,48 +117,10 @@ private extension MainViewController {
             $0.height.equalTo(40)
         }
         
-        stackView.snp.makeConstraints {
+        tableView.snp.makeConstraints {
             $0.top.equalTo(searchBar.snp.bottom).offset(15)
-            $0.leading.trailing.bottom.equalToSuperview()
-        }
-        
-        locationView.snp.makeConstraints {
-            $0.top.equalToSuperview()
-            $0.leading.trailing.equalToSuperview().inset(20)
-        }
-        
-        imageView.snp.makeConstraints {
-            $0.edges.equalTo(locationView.snp.edges)
-        }
-        
-        locationLabel.snp.makeConstraints {
-            $0.top.equalToSuperview().inset(10)
-            $0.leading.equalToSuperview().inset(16)
-        }
-        
-        cityLabel.snp.makeConstraints {
-            $0.top.equalTo(locationLabel.snp.bottom).offset(2)
-            $0.leading.equalToSuperview().inset(16)
-        }
-        
-        currentWeatherLabel.snp.makeConstraints {
-            $0.bottom.equalToSuperview().inset(10)
-            $0.leading.equalToSuperview().inset(16)
-        }
-        
-        currentTemperatureLabel.snp.makeConstraints {
-            $0.top.equalToSuperview().inset(4)
-            $0.trailing.equalToSuperview().inset(16)
-        }
-        
-        minimumTemperatureLabel.snp.makeConstraints {
-            $0.bottom.equalToSuperview().inset(10)
-            $0.trailing.equalToSuperview().inset(16)
-        }
-        
-        maximumTemperatureLabel.snp.makeConstraints {
-            $0.bottom.equalToSuperview().inset(10)
-            $0.trailing.equalTo(minimumTemperatureLabel.snp.leading).offset(-6)
+            $0.leading.trailing.equalToSuperview().inset(16)
+            $0.bottom.equalToSuperview()
         }
     }
 }

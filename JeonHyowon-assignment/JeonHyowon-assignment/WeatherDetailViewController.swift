@@ -181,7 +181,6 @@ extension WeatherDetailViewController: UITableViewDelegate {
         }
         
         [imageView, label].forEach {
-            $0.translatesAutoresizingMaskIntoConstraints = false
             headerView.addSubview($0)
         }
         
@@ -223,7 +222,6 @@ private extension WeatherDetailViewController {
             scrollView,
             toolbarView
         ].forEach {
-            $0.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview($0)
         }
         
@@ -244,7 +242,6 @@ private extension WeatherDetailViewController {
         [
             contentView
         ].forEach {
-            $0.translatesAutoresizingMaskIntoConstraints = false
             scrollView.addSubview($0)
         }
         
@@ -256,7 +253,6 @@ private extension WeatherDetailViewController {
             mapButton,
             menuButton
         ].forEach {
-            $0.translatesAutoresizingMaskIntoConstraints = false
             toolbarView.addSubview($0)
         }
         
@@ -278,7 +274,6 @@ private extension WeatherDetailViewController {
             weatherDetailView,
             tableView
         ].forEach {
-            $0.translatesAutoresizingMaskIntoConstraints = false
             contentView.addSubview($0)
         }
         
@@ -318,7 +313,6 @@ private extension WeatherDetailViewController {
             separatorView,
             collectionView
         ].forEach {
-            $0.translatesAutoresizingMaskIntoConstraints = false
             weatherDetailView.addSubview($0)
         }
         
